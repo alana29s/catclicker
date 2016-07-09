@@ -1,0 +1,14 @@
+div {
+    margin: 0 auto;
+    max-width: 980px;
+}
+
+img {
+    margin 0 auto;
+}
+
+.cat {
+    width: 50%;
+    text-align: center;
+    float: left;
+}
