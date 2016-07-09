@@ -1,0 +1,41 @@
+<htmL>
+<head>
+<title>Cat Clicker!</title>
+<style>
+
+div {
+    margin: 0 auto;
+    max-width: 400px;
+    text-align: center;
+}
+
+img {
+    margin 0 auto;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    var clicks = 0 ;
+    jQuery('#catimage').click(function(){
+        $('#total-clicked').html(clicks++);
+});
+});
+
+</script>
+</head>
+<body>
+
+<div>
+<h1>I clicked my cat</h1>
+<p><span id="total-clicked">0</span><br>
+Times!</p>
+
+<img id="catimage" src="http://placekitten.com/200/300">
+
+</div>
+
+</body>
+</htmL>
+
