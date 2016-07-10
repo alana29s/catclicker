@@ -11,5 +11,24 @@ img {
     width: 50%;
     text-align: center;
     float: left;
-    display: none;
+}
+
+.catlist {
+    float: left;
+    width: 25%;
+}
+
+.catname {
+    padding: 20px;
+    margin: 20px 0;
+    border: 2px solid blue;
+    background-color: lightgray;
+    color: black;
+    font-size: 20px;
+    letter-spacing: .5em;
+    border-radius: 5px;
+}
+
+#catlist {
+    list-style-type: none;
 }

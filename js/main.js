@@ -1,4 +1,6 @@
-var animals = {
+$(document).ready(function(){
+
+var model = {
     "cats": [
         {
             "name": "poofy",
@@ -12,7 +14,7 @@ var animals = {
         },
                 {
             "name": "gray baby",
-            "imageUrl": "http://placekitten.com/250/250",
+            "imageUrl": "http://placekitten.com/350/250",
             "clicks": 0
         },
                 {
@@ -25,56 +27,108 @@ var animals = {
             "imageUrl": "http://placekitten.com/325/365",
             "clicks": 0
         }
-    ]
+    ],
+
+    getAllCats: function() {
+        return this.cats;
+    },
+
+    getSingleCat: function(cat) {
+        return this.cats[cat];
+    },
+
+    catClicked: function(cat) {
+        this.cats[cat].clicks ++;
+        return this.cats[cat].clicks;
+    }
 }
 
-// Helper HTML
-var catDiv = '<div class="cat" data-catnumber="%catNum"><h1>%name</h1><h2>%clicks</h2></div>';
-var catImage = '<img src="%data">';
-var catListItem = '<li class="catname" data-catnumber="%catNum">%name</li>';
+var octopus = {
+    init: function() {
+        viewCatList.init();
+        viewCatMain.init();
+    },
 
-$(document).ready(function(){
-    //loop through animals object and append divs.
-    var catsLength = animals.cats.length;
+    getCatsList: function () {
+        return model.getAllCats();
+    },
 
-    // Now these are hidden by default in CSS
-    for(var i = 0; i < catsLength; i++){
-        // First using helper variables replace names
-        var newCatDiv = catDiv.replace('%name', animals.cats[i].name).replace('%clicks', animals.cats[i].clicks).replace('%catNum', i);
-        var newCatImage = catImage.replace('%data', animals.cats[i].imageUrl);
-        // Now append new html
-        $('.main').append(newCatDiv);
-        $('.main .cat:last').append(newCatImage);
-    };
+    changeCat: function(myCat) {
+        //get new cat from model
+        var newCat = model.getSingleCat(myCat);
 
+        //send cat and catnumber to view for render
+        viewCatMain.render(newCat, myCat);
+    },
 
-    //create a list of cats
-    for(var i = 0; i < catsLength; i++){
-        var newCatListItem = catListItem.replace('%catNum', i).replace('%name', animals.cats[i].name);
-        $('#catlist').append(newCatListItem);
-    };
+    catClicked: function(myCat) {
+        //update model with click
+        var newClickCount = model.catClicked(myCat);
 
+        //call view to update clicks
+        viewCatMain.renderClick(newClickCount);
+    }
+};
 
-    //Track clicks when a cat is clicked
-    $('.cat').click(function(){
-        // First determine which cat was clicked by it's data number
-        var myCat = $(this).data('catnumber');
-        // Using the datan number construct the jQuery selector
-        var catSelector = '.cat[data-catnumber="' + myCat + '"] h2';
-        // Get the current click count and change it into an integer
-        var currentClick = parseInt($(catSelector).html());
-        // Update the click count by 1
-        $(catSelector).html(currentClick + 1);
-    });
+var viewCatList = {
+        init: function(){
+            //create a list of cats by asking octupus for list of cats then display
+            var catList = octopus.getCatsList();
+            var catsLength = catList.length;
+            var catListItem = '<li class="catname" data-catnumber="%catNum">%name</li>';
+            for(var i = 0; i < catsLength; i++){
+                var newCatListItem = catListItem.replace('%catNum', i).replace('%name', catList[i].name);
+                $('#catlist').append(newCatListItem);
+            };
 
-    $('.catname').click(function(){
-        // Get data id from this list item
-        var myCat = $(this).data('catnumber');
-        // now ceate the div cat selector
-        var catSelector = '.cat[data-catnumber="' + myCat + '"]';
-        // first hide all cats
-        $('.cat').css('display', 'none');
-        // now show the selected cat
-        $(catSelector).css('display', 'block');
-    });
+            //Setup click
+            $('.catname').click(function(){
+                //Determine which cat is clicked
+                var myCat = $(this).attr('data-catnumber');
+                //Now ask octopus to change cat
+                octopus.changeCat(myCat);
+             });
+        }
+};
+
+var viewCatMain = {
+        init: function() {
+            //Ask Octopus for first cats
+            var catList = octopus.getCatsList();
+
+            //Helper HTML
+            var catDiv = '<div class="cat" data-catnumber="%catNum"><h1>%name</h1><h2>%clicks</h2></div>';
+            var catImage = '<img src="%data">';
+
+            //Set initial div to the first cat in the Array
+            var newCatDiv = catDiv.replace('%name', catList[0].name).replace('%clicks', catList[0].clicks).replace('%catNum', 0);
+            var newCatImage = catImage.replace('%data', catList[0].imageUrl);
+
+            // Now append new html
+            $('.main').append(newCatDiv);
+            $('.main .cat:last').append(newCatImage);
+
+            //Track clicks when a cat is clicked
+            $('.cat').click(function(){
+                //First determine which cat was clicked by it's data number
+                var myCat = $(this).attr('data-catnumber');
+                //Call Octopus to increase clicks
+                octopus.catClicked(myCat);
+            });
+        },
+
+        render: function(cat, catnumber) {
+            $('.cat img').attr('src', cat.imageUrl );
+            $('.cat h1').html(cat.name);
+            $('.cat h2').html(cat.clicks);
+            $('.cat').attr('data-catnumber', catnumber);
+        },
+
+        renderClick: function(clickCount) {
+            $('.cat h2').html(clickCount);
+        }
+};
+
+octopus.init();
+
 });
