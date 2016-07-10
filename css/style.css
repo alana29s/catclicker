@@ -32,3 +32,19 @@ img {
 #catlist {
     list-style-type: none;
 }
+
+.catviewer {
+    float: right;
+    width: 50%;
+}
+
+.admin {
+    clear: both;
+    font-size: 18px;
+    display: none;
+}
+
+.buttonarea {
+    clear: both;
+
+}

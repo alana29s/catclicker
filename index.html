@@ -9,12 +9,24 @@
 <body>
 
 <div class="main">
-<div class="catlist">
-    <ul id="catlist"></ul>
-</div>
+    <div class="catlist">
+        <ul id="catlist"></ul>
+    </div>
 
-<div class="catviewer">
-</div>
+    <div class="catviewer">
+    </div>
+    <div class="buttonarea"><button type="button" id="adminbutton">Admin</button></div>
+
+    <form class="admin">
+        <div class="admin-area">
+        <p>Cat Name: <input type="text" name="catname"></input></p>
+        <p>Image URL: <input type="text" name="imageurl"></input></p>
+        <p>Clicks: <input type="text" name="clicks"></input><p>
+        <p>Unique Cat Identifier: <input type="text" name="catidentifier"></input><p>
+        <input type="submit" value="save"></button>
+        <button type="button" id="cancelbutton">Cancel</button>
+        </div>
+    </form>
 
 </div>
 

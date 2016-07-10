@@ -40,6 +40,10 @@ var model = {
     catClicked: function(cat) {
         this.cats[cat].clicks ++;
         return this.cats[cat].clicks;
+    },
+
+    currentCat: function(cat) {
+        return this.cats[cat];
     }
 }
 
@@ -47,6 +51,7 @@ var octopus = {
     init: function() {
         viewCatList.init();
         viewCatMain.init();
+        viewAdmin.init();
     },
 
     getCatsList: function () {
@@ -67,6 +72,18 @@ var octopus = {
 
         //call view to update clicks
         viewCatMain.renderClick(newClickCount);
+    },
+
+    currentCat: function(myCat) {
+        return model.currentCat(myCat);
+
+    },
+
+    updateCat: function(newName, newImageURL, newClicks,myCat){
+        model.cats[myCat].name = newName;
+        model.cats[myCat].imageUrl = newImageURL;
+        model.cats[myCat].clicks = newClicks;
+        octopus.changeCat(myCat);
     }
 };
 
@@ -105,8 +122,8 @@ var viewCatMain = {
             var newCatImage = catImage.replace('%data', catList[0].imageUrl);
 
             // Now append new html
-            $('.main').append(newCatDiv);
-            $('.main .cat:last').append(newCatImage);
+            $('.main').prepend(newCatDiv);
+            $('.main .cat').append(newCatImage);
 
             //Track clicks when a cat is clicked
             $('.cat').click(function(){
@@ -126,6 +143,47 @@ var viewCatMain = {
 
         renderClick: function(clickCount) {
             $('.cat h2').html(clickCount);
+        }
+};
+
+var viewAdmin = {
+        init: function (){
+            // add event listeners to show admin area
+            $('#adminbutton').click(function(){
+                $('.admin').css('display', 'block');
+                //now I need currently selected cat
+                var myCat = $('.cat').attr('data-catnumber');
+                //now call octopus to get the current cat object
+                var currentCat = octopus.currentCat(myCat);
+                // now fill in fields
+                $('input[name="catname"]').val(currentCat.name);
+                $('input[name="imageurl"]').val(currentCat.imageUrl);
+                $('input[name="clicks"]').val(currentCat.clicks);
+                $('input[name="catidentifier"]').val(myCat);
+            });
+
+            // add event listeners to hide admin area
+            $('#cancelbutton').click(function(){
+                $('.admin').css('display', 'none');
+            });
+
+            //add submit event listener
+            $('.admin').submit(function(event) {
+                console.log('submit clicked');
+                event.preventDefault();
+
+                // now get values and send to octopus
+                var newName = $('input[name="catname"]').val();
+                var newImageURL = $('input[name="imageurl"]').val();
+                var newClicks = $('input[name="clicks"]').val();
+                var newCat = $('input[name="catidentifier"]').val();
+                octopus.updateCat(newName, newImageURL, newClicks,newCat)
+
+                //also update cat list with new name
+                $('.catname[data-catnumber="'+ newCat +'"]').html(newName);
+                //hide admin area
+                $('.admin').css('display', 'none');
+            });
         }
 };
 
